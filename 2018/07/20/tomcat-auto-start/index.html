@@ -1,93 +1,141 @@
-<!DOCTYPE html>
+<!DOCTYPE HTML>
 <html>
 <head>
   <meta charset="utf-8">
-  
-
+  <meta http-equiv="pragma" content="no-cache">
+  <meta http-equiv="cache-control" content="no-cache">
+  <meta http-equiv="expires" content="0">
   
   <title>tomcat-auto-start | Beishan&#39;s Blog</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="author" content="Beishan">
+  
   <meta name="description" content="Tomcat 自启动配置0、思路写一个脚本然后利用系统的chkconfig 命令开启自启动">
-<meta name="keywords" content="tomcat">
-<meta property="og:type" content="article">
-<meta property="og:title" content="tomcat-auto-start">
-<meta property="og:url" content="http://yoursite.com/2018/07/20/tomcat-auto-start/index.html">
-<meta property="og:site_name" content="Beishan&#39;s Blog">
-<meta property="og:description" content="Tomcat 自启动配置0、思路写一个脚本然后利用系统的chkconfig 命令开启自启动">
-<meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-07-20T06:16:07.478Z">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="tomcat-auto-start">
-<meta name="twitter:description" content="Tomcat 自启动配置0、思路写一个脚本然后利用系统的chkconfig 命令开启自启动">
-  
-    <link rel="alternate" href="/atom.xml" title="Beishan&#39;s Blog" type="application/atom+xml">
   
   
-    <link rel="icon" href="/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="tomcat-auto-start"/>
+  <meta property="og:site_name" content="Beishan&#39;s Blog"/>
+
+  
+    <meta property="og:image" content=""/>
+  
+
   
   
-    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+    <link href="/favicon.png" rel="icon">
   
-  <link rel="stylesheet" href="/css/style.css">
+  
+  <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/font-awesome.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/responsive.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/highlight.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/google-fonts.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+
+  <script src="/js/jquery-2.0.3.min.js"></script>
+
+  <!-- analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-70812759-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?cb5448498d7169c668b07c2b255d62c1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
 </head>
 
-<body>
-  <div id="container">
-    <div id="wrap">
-      <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">Beishan&#39;s Blog</a>
-      </h1>
-      
-    </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"></a>
-        
-          <a class="main-nav-link" href="/">Home</a>
-        
-          <a class="main-nav-link" href="/archives">Archives</a>
-        
-      </nav>
-      <nav id="sub-nav">
-        
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
-        
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+ <body>  
+  <nav id="main-nav" class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container">
+      <button type="button" class="navbar-header navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+		<span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+	  <a class="navbar-brand" href="/">Beishan&#39;s Blog</a>
+      <div class="collapse navbar-collapse nav-menu">
+		<ul class="nav navbar-nav">
+		  
+		  <li>
+			<a href="/archives" title="All the articles.">
+			  <i class=""></i>Archives
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/categories" title="All the categories.">
+			  <i class=""></i>Categories
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/tags" title="All the tags.">
+			  <i class=""></i>Tags
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/about" title="About me.">
+			  <i class=""></i>About
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/atom.xml" title="Subscribe me.">
+			  <i class=""></i>RSS
+			</a>
+		  </li>
+		  
+		</ul>
       </div>
-    </div>
-  </div>
-</header>
-      <div class="outer">
-        <section id="main"><article id="post-tomcat-auto-start" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/07/20/tomcat-auto-start/" class="article-date">
-  <time datetime="2018-07-20T06:02:53.000Z" itemprop="datePublished">2018-07-20</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 class="article-title" itemprop="name">
-      tomcat-auto-start
-    </h1>
-  
+    </div> <!-- container -->
+</nav>
+<div class="clearfix"></div>
 
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="Tomcat-自启动配置"><a href="#Tomcat-自启动配置" class="headerlink" title="Tomcat 自启动配置"></a>Tomcat 自启动配置</h1><p>0、思路<br>写一个脚本然后利用系统的chkconfig 命令开启自启动<br><a id="more"></a><br>1、进入/etc/init.d<br>2、创建服务脚本<br>新建文件tomcat，内容如下：</p>
+  <div class="container">
+  	<div class="content">
+    	 
+
+
+	
+		<div class="page-header">
+			<h1> tomcat-auto-start</h1>
+		</div>
+	
+
+
+
+<div class="row post">
+	<!-- cols -->
+	
+	<div id="top_meta"></div>
+	<div class="col-md-9">
+	
+
+	<!-- content -->
+	<div class="mypage">		
+	  		
+
+	  <h1 id="Tomcat-自启动配置"><a href="#Tomcat-自启动配置" class="headerlink" title="Tomcat 自启动配置"></a>Tomcat 自启动配置</h1><p>0、思路<br>写一个脚本然后利用系统的chkconfig 命令开启自启动<br><a id="more"></a><br>1、进入/etc/init.d<br>2、创建服务脚本<br>新建文件tomcat，内容如下：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line"><span class="comment"># chkconfig: 345 99 10</span></span><br><span class="line"><span class="comment"># description: Auto-starts tomcat</span></span><br><span class="line"><span class="comment"># /etc/init.d/tomcat</span></span><br><span class="line"><span class="comment"># Tomcat auto-start</span></span><br><span class="line"><span class="comment"># Source function library.</span></span><br><span class="line"><span class="comment">#. /etc/init.d/functions</span></span><br><span class="line"><span class="comment"># source networking configuration.</span></span><br><span class="line"><span class="comment">#. /etc/sysconfig/network</span></span><br><span class="line">RETVAL=0</span><br><span class="line"><span class="comment"># jre 路径</span></span><br><span class="line"><span class="built_in">export</span> JRE_HOME=/usr/jre1.6.0_22</span><br><span class="line"><span class="comment"># Tomcat path</span></span><br><span class="line"><span class="built_in">export</span> CATALINA_HOME=/usr/tomcat6</span><br><span class="line"><span class="built_in">export</span> CATALINA_BASE=/usr/tomcat6</span><br><span class="line">start()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> [ -f <span class="variable">$CATALINA_HOME</span>/bin/startup.sh ];</span><br><span class="line">    <span class="keyword">then</span></span><br><span class="line">        <span class="built_in">echo</span> $<span class="string">"Starting Tomcat"</span></span><br><span class="line">            <span class="variable">$CATALINA_HOME</span>/bin/startup.sh</span><br><span class="line">            RETVAL=$?</span><br><span class="line">            <span class="built_in">echo</span> <span class="string">" OK"</span></span><br><span class="line">            <span class="built_in">return</span> <span class="variable">$RETVAL</span></span><br><span class="line">    <span class="keyword">fi</span></span><br><span class="line">&#125;</span><br><span class="line">stop()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> [ -f <span class="variable">$CATALINA_HOME</span>/bin/shutdown.sh ];</span><br><span class="line">      <span class="keyword">then</span></span><br><span class="line">        <span class="built_in">echo</span> $<span class="string">"Stopping Tomcat"</span></span><br><span class="line">            <span class="variable">$CATALINA_HOME</span>/bin/shutdown.sh</span><br><span class="line">        RETVAL=$?</span><br><span class="line">        sleep 1</span><br><span class="line">        ps -fwwu tomcat | grep apache-tomcat|grep -v grep | grep -v PID | awk <span class="string">'&#123;print $2&#125;'</span>|xargs <span class="built_in">kill</span> -9</span><br><span class="line">        <span class="built_in">echo</span> <span class="string">" OK"</span></span><br><span class="line">        <span class="comment"># [ $RETVAL -eq 0 ] &amp;&amp; rm -f /var/lock/...</span></span><br><span class="line">        <span class="built_in">return</span> <span class="variable">$RETVAL</span></span><br><span class="line">    <span class="keyword">fi</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">case</span> <span class="string">"<span class="variable">$1</span>"</span> <span class="keyword">in</span></span><br><span class="line">    start)</span><br><span class="line">        start</span><br><span class="line">        ;;</span><br><span class="line">    stop)  </span><br><span class="line">        stop</span><br><span class="line">        ;;</span><br><span class="line">restart)</span><br><span class="line">     <span class="built_in">echo</span> $<span class="string">"Restaring Tomcat"</span></span><br><span class="line">     <span class="variable">$0</span> stop</span><br><span class="line">     sleep 1</span><br><span class="line">     <span class="variable">$0</span> start</span><br><span class="line">     ;;</span><br><span class="line">*)</span><br><span class="line">    <span class="built_in">echo</span> $<span class="string">"Usage: <span class="variable">$0</span> &#123;start|stop|restart&#125;"</span></span><br><span class="line">    <span class="built_in">exit</span> 1</span><br><span class="line">    ;;</span><br><span class="line"><span class="keyword">esac</span></span><br><span class="line"><span class="built_in">exit</span> <span class="variable">$RETVAL</span></span><br></pre></td></tr></table></figure>
 <p>3、给脚本添加执行权限<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo chmod +x /etc/init.d/tomcat</span><br></pre></td></tr></table></figure></p>
 <p>4、设置开机自启动<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chkconfig --add tomcat</span><br></pre></td></tr></table></figure></p>
@@ -97,141 +145,128 @@
 <p>注意：if 与 [ 之间一定要有空格</p>
 </blockquote>
 <p>以后我们也可以通过 <code>service tomcat &lt;start|stop|restart&gt;</code>来开启和关闭tomcat服务<br>同时我们也可以通过写多个脚本来分别控制不同的tomcat</p>
+	  
+	</div>
 
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/07/20/tomcat-auto-start/" data-id="cjjtlawf20008rvfy4un6a0xg" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/tomcat/">tomcat</a></li></ul>
+	<div>
+  	<center>
+	<div class="pagination">
 
-    </footer>
-  </div>
-  
     
-<nav id="article-nav">
-  
-    <a href="/2018/07/20/tomcat-mutil-pro-config/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          tomcat-mutil-pro-config
-        
-      </div>
-    </a>
-  
-  
-    <a href="/2018/07/20/centos-time-sync/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">centos-time-sync</div>
-    </a>
-  
-</nav>
+    
+    <a href="/2018/07/20/tomcat-mutil-pro-config/" type="button" class="btn btn-default"><i
+                class="fa fa-arrow-circle-o-left"></i> Prev</a>
+    
 
-  
-</article>
+    <a href="/" type="button" class="btn btn-default"><i class="fa fa-home"></i>Home</a>
+    
+    <a href="/2018/07/20/centos-time-sync/" type="button" class="btn btn-default ">Next<i
+                class="fa fa-arrow-circle-o-right"></i></a>
+    
 
+    
+</div>
+
+    </center>
+	</div>
+	
+	<!-- comment -->
+	
+<section id="comment">
+    <h2 class="title">Comments</h2>
+
+    
 </section>
-        
-          <aside id="sidebar">
-  
+
+
+	</div> <!-- col-md-9/col-md-12 -->
+		
+	
+	<div id="side_meta">
+		<div class="col-md-3" id="post_meta"> 
+
+	<!-- date -->
+	
+	<div class="meta-widget">
+	<i class="fa fa-clock-o"></i>
+	2018-07-20 
+	</div>
+	
+
+	<!-- categories -->
     
 
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tags</h3>
-    <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gitlab/">gitlab</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux-centos-time/">linux, centos, time</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/">mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/springboot/">springboot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/">tomcat</a></li></ul>
-    </div>
+	<!-- tags -->
+	
+	<div class="meta-widget">
+	<a data-toggle="collapse" data-target="#tags"><i class="fa fa-tags"></i></a>		  
+    <ul id="tags" class="tag_box list-unstyled collapse in">	  
+	    
+  <li><a href="/tags/tomcat/">tomcat<span>1</span></a></li>
+    </ul>
+	</div>
+		
+
+	<!-- toc -->
+	<div class="meta-widget">
+	
+	</div>
+	
+    <hr>
+	
+</div><!-- col-md-3 -->
+
+	</div>
+		
+
+</div><!-- row -->
+
+
+
+	</div>
   </div>
+  <div class="container-narrow">
+  <footer> <p>
+  &copy; 2018 Beishan
+  
+      with help from <a href="http://hexo.io/" target="_blank">Hexo</a>,<a href="http://github.com/wzpan/hexo-theme-freemind/">Freemind</a>,<a href="http://getbootstrap.com/" target="_blank">Twitter Bootstrap</a> and <a href="http://getbootstrap.com/" target="_blank">BOOTSTRA.386</a>. 
+     <br> Theme by <a href="http://github.com/wzpan/hexo-theme-freemind/">Freemind.386</a>.    
+</p>
+ </footer>
+</div> <!-- container-narrow -->
+  
 
 
   
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tag Cloud</h3>
-    <div class="widget tagcloud">
-      <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/gitlab/" style="font-size: 10px;">gitlab</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/linux-centos-time/" style="font-size: 10px;">linux, centos, time</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/springboot/" style="font-size: 10px;">springboot</a> <a href="/tags/tomcat/" style="font-size: 10px;">tomcat</a>
-    </div>
-  </div>
+<a id="gotop" href="#">   
+  <span>⬆︎TOP</span>
+</a>
 
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li></ul>
-    </div>
-  </div>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/main.js"></script>
+<script src="/js/search.js"></script> 
 
 
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
-    <div class="widget">
-      <ul>
-        
-          <li>
-            <a href="/2018/07/20/gitlab-backup-recover/">gitlab-backup-recover</a>
-          </li>
-        
-          <li>
-            <a href="/2018/07/20/tomcat-mutil-pro-config/">tomcat-mutil-pro-config</a>
-          </li>
-        
-          <li>
-            <a href="/2018/07/20/tomcat-auto-start/">tomcat-auto-start</a>
-          </li>
-        
-          <li>
-            <a href="/2018/07/20/centos-time-sync/">centos-time-sync</a>
-          </li>
-        
-          <li>
-            <a href="/2018/07/20/springboot-config-jar/">springboot-config-jar</a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
-
-  
-</aside>
-        
-      </div>
-      <footer id="footer">
-  
-  <div class="outer">
-    <div id="footer-info" class="inner">
-      &copy; 2018 Beishan<br>
-      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
-    </div>
-  </div>
-</footer>
-    </div>
-    <nav id="mobile-nav">
-  
-    <a href="/" class="mobile-nav-link">Home</a>
-  
-    <a href="/archives" class="mobile-nav-link">Archives</a>
-  
-</nav>
-    
-
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-
-
-  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
-  <script src="/fancybox/jquery.fancybox.pack.js"></script>
-
-
-<script src="/js/script.js"></script>
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
 
 
 
-  </div>
+   <script type="text/javascript">      
+     var search_path = "search.xml";
+	 if (search_path.length == 0) {
+	 	search_path = "search.xml";
+	 }
+	 var path = "/" + search_path;
+     searchFunc(path, 'local-search-input', 'local-search-result');
+   </script>
+
 </body>
-</html>
+   </html>
