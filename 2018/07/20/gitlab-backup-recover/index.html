@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>gitlab-backup-recover | Beishan&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="GitLab 备份及恢复Gitlab 创建备份">
+<meta name="keywords" content="gitlab">
+<meta property="og:type" content="article">
+<meta property="og:title" content="gitlab-backup-recover">
+<meta property="og:url" content="http://yoursite.com/2018/07/20/gitlab-backup-recover/index.html">
+<meta property="og:site_name" content="Beishan&#39;s Blog">
+<meta property="og:description" content="GitLab 备份及恢复Gitlab 创建备份">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2018-07-20T06:15:18.162Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="gitlab-backup-recover">
+<meta name="twitter:description" content="GitLab 备份及恢复Gitlab 创建备份">
+  
+    <link rel="alternate" href="/atom.xml" title="Beishan&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Beishan&#39;s Blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-gitlab-backup-recover" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/07/20/gitlab-backup-recover/" class="article-date">
+  <time datetime="2018-07-20T06:12:06.000Z" itemprop="datePublished">2018-07-20</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      gitlab-backup-recover
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="GitLab-备份及恢复"><a href="#GitLab-备份及恢复" class="headerlink" title="GitLab 备份及恢复"></a>GitLab 备份及恢复</h1><h3 id="Gitlab-创建备份"><a href="#Gitlab-创建备份" class="headerlink" title="Gitlab 创建备份"></a>Gitlab 创建备份</h3><a id="more"></a>
+<p>使用Gitlab一键安装包安装Gitlab非常简单, 同样的备份恢复与迁移也非常简单. 使用一条命令即可创建完整的Gitlab备份:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gitlab-rake gitlab:backup:create</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>使用以上命令会在/var/opt/gitlab/backups目录下创建一个名称类似为1393513186_gitlab_backup.tar的压缩包, 这个压缩包就是Gitlab整个的完整部分, 其中开头的1393513186是备份创建的日期.</p>
+</blockquote>
+<h3 id="Gitlab-修改备份文件默认目录"><a href="#Gitlab-修改备份文件默认目录" class="headerlink" title="Gitlab 修改备份文件默认目录"></a>Gitlab 修改备份文件默认目录</h3><p>你也可以通过修改/etc/gitlab/gitlab.rb来修改默认存放备份文件的目录:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gitlab_rails[&apos;backup_path&apos;] = &apos;/mnt/backups&apos;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><code>/mnt/backups</code>修改为你想存放备份的目录即可, 修改完成之后使用gitlab-ctl reconfigure命令重载配置文件即可.</p>
+</blockquote>
+<h3 id="Gitlab-自动备份"><a href="#Gitlab-自动备份" class="headerlink" title="Gitlab 自动备份"></a>Gitlab 自动备份</h3><p>也可以通过crontab使用备份命令实现自动备份:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo su -</span><br><span class="line">crontab -e</span><br></pre></td></tr></table></figure>
+<p>加入以下, 实现每天凌晨2点进行一次自动备份:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0 2 * * * /opt/gitlab/bin/gitlab-rake gitlab:backup:create</span><br></pre></td></tr></table></figure>
+<h2 id="Gitlab-恢复"><a href="#Gitlab-恢复" class="headerlink" title="Gitlab 恢复"></a>Gitlab 恢复</h2><p>同样, Gitlab的从备份恢复也非常简单:</p>
+<p>停止相关数据连接服务</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">gitlab-ctl stop unicorn</span><br><span class="line">gitlab-ctl stop sidekiq</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>从1393513186编号备份中恢复</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gitlab-rake gitlab:backup:restore BACKUP=1393513186</span><br></pre></td></tr></table></figure>
+<h3 id="启动Gitlab"><a href="#启动Gitlab" class="headerlink" title="启动Gitlab"></a>启动Gitlab</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo gitlab-ctl start</span><br></pre></td></tr></table></figure>
+<h2 id="Gitlab迁移"><a href="#Gitlab迁移" class="headerlink" title="Gitlab迁移"></a>Gitlab迁移</h2><p>迁移如同备份与恢复的步骤一样, 只需要将老服务器/var/opt/gitlab/backups 目录下的备份文件拷贝到新服务器上的 /var/opt/gitlab/backups 即可(如果你没修改过默认备份目录的话). 但是需要注意的是新服务器上的Gitlab的版本必须与创建备份时的Gitlab版本号相同. 比如新服务器安装的是最新的7.60版本的Gitlab, 那么迁移之前, 最好将老服务器的Gitlab 升级为7.60在进行备份.</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/07/20/gitlab-backup-recover/" data-id="cjjtlaweo0001rvfyqb70xkwp" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/gitlab/">gitlab</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2018/07/20/tomcat-mutil-pro-config/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">tomcat-mutil-pro-config</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gitlab/">gitlab</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux-centos-time/">linux, centos, time</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/">mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/springboot/">springboot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/">tomcat</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/gitlab/" style="font-size: 10px;">gitlab</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/linux-centos-time/" style="font-size: 10px;">linux, centos, time</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/springboot/" style="font-size: 10px;">springboot</a> <a href="/tags/tomcat/" style="font-size: 10px;">tomcat</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2018/07/20/gitlab-backup-recover/">gitlab-backup-recover</a>
+          </li>
+        
+          <li>
+            <a href="/2018/07/20/tomcat-mutil-pro-config/">tomcat-mutil-pro-config</a>
+          </li>
+        
+          <li>
+            <a href="/2018/07/20/tomcat-auto-start/">tomcat-auto-start</a>
+          </li>
+        
+          <li>
+            <a href="/2018/07/20/centos-time-sync/">centos-time-sync</a>
+          </li>
+        
+          <li>
+            <a href="/2018/07/20/springboot-config-jar/">springboot-config-jar</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 Beishan<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

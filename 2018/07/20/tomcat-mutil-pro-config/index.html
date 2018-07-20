@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>tomcat-mutil-pro-config | Beishan&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Tomcat 多项目部署">
+<meta property="og:type" content="article">
+<meta property="og:title" content="tomcat-mutil-pro-config">
+<meta property="og:url" content="http://yoursite.com/2018/07/20/tomcat-mutil-pro-config/index.html">
+<meta property="og:site_name" content="Beishan&#39;s Blog">
+<meta property="og:description" content="Tomcat 多项目部署">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2018-07-20T06:15:59.959Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="tomcat-mutil-pro-config">
+<meta name="twitter:description" content="Tomcat 多项目部署">
+  
+    <link rel="alternate" href="/atom.xml" title="Beishan&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Beishan&#39;s Blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-tomcat-mutil-pro-config" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/07/20/tomcat-mutil-pro-config/" class="article-date">
+  <time datetime="2018-07-20T06:08:15.000Z" itemprop="datePublished">2018-07-20</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      tomcat-mutil-pro-config
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Tomcat 多项目部署<br><a id="more"></a><br>0、背景<br>最近遇到一个工作需要在Tomcat下部署多个项目，要求不同的项目用不同的域名访问，在网上搜了搜发现方法还很多，在这里我们介绍我现在在用的方法：</p>
+<p>首先我们来假定需要在Tomcat 里部署两个项目分别是：<code>project1</code> 和 <code>project2</code><br>访问他们的地址分别为：<code>project1.example.com</code>、<code>project2.example.com</code></p>
+<p>1、新建项目Folder<br>首先我们在Tomcat目录下新建两个目录分别为 <code>project1</code> 和 <code>project2</code> ,然后在他们的下面分别建一个ROOT文件夹，</p>
+<p>注意ROOT一定要大写</p>
+<p>2、配置Host节点<br>接下来我们需要配置一下，当我们用不同域名来访问时，导向到不同的项目。很简单我们打开tomcat/conf下的server.xml文件找到以下节点：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;Host name=&quot;localhost&quot;  appBase=&quot;webapps&quot;</span><br><span class="line">        unpackWARs=&quot;true&quot; autoDeploy=&quot;true&quot;&gt;</span><br><span class="line">    &lt;Valve className=&quot;org.apache.catalina.valves.AccessLogValve&quot; directory=&quot;logs&quot;</span><br><span class="line">         prefix=&quot;localhost_access_log&quot; suffix=&quot;.txt&quot;</span><br><span class="line">         pattern=&quot;%h %l %u %t &amp;quot;%r&amp;quot; %s %b&quot; /&gt;</span><br><span class="line">&lt;/Host&gt;</span><br></pre></td></tr></table></figure>
+<p>然后在其下方加入如下两个Host节点</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;Host name=&quot;project1.example.com&quot;  appBase=&quot;project1&quot;</span><br><span class="line">        unpackWARs=&quot;true&quot; autoDeploy=&quot;true&quot;</span><br><span class="line">        xmlValidation=&quot;false&quot; xmlNamespaceAware=&quot;false&quot;&gt;</span><br><span class="line">&lt;/Host&gt;</span><br><span class="line">&lt;Host name=&quot;project2.example.com&quot;  appBase=&quot;project2&quot;</span><br><span class="line">        unpackWARs=&quot;true&quot; autoDeploy=&quot;true&quot;</span><br><span class="line">        xmlValidation=&quot;false&quot; xmlNamespaceAware=&quot;false&quot;&gt;</span><br><span class="line">&lt;/Host&gt;</span><br></pre></td></tr></table></figure>
+<p>其中：</p>
+<ul>
+<li>name代表我们的域名</li>
+<li>appBase 代表我们项目的根目录，一定要和我们第一步里建的目录名一模一样</li>
+</ul>
+<p>3、部署项目<br>接下来就是要把我们的项目部署到Tomcat里了，我们知道以前我们的部署方式都是打个war包放到webapps目录里就行了，但是我们这次就不能这样做了，我们需要手动解压war包(解压方法是先把.war后缀名改为 .zip然后解压就行)，然后把WEB-INF 同级的东西都Copy到我们对应项目的ROOT下,然后重启Tomcat大功告成。</p>
+<p>4、检验成果<br>如果用相应的域名可以访问相应的项目就代表成功了</p>
+<p>至于那两个域名，直接修改hosts文件,把那两个域名指向本地即可（或者指向部署tomcat的目标机器）</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/07/20/tomcat-mutil-pro-config/" data-id="cjjtlawf5000brvfygd2cvket" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2018/07/20/gitlab-backup-recover/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          gitlab-backup-recover
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/07/20/tomcat-auto-start/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">tomcat-auto-start</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gitlab/">gitlab</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux-centos-time/">linux, centos, time</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/">mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/springboot/">springboot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/">tomcat</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/gitlab/" style="font-size: 10px;">gitlab</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/linux-centos-time/" style="font-size: 10px;">linux, centos, time</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/springboot/" style="font-size: 10px;">springboot</a> <a href="/tags/tomcat/" style="font-size: 10px;">tomcat</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2018/07/20/gitlab-backup-recover/">gitlab-backup-recover</a>
+          </li>
+        
+          <li>
+            <a href="/2018/07/20/tomcat-mutil-pro-config/">tomcat-mutil-pro-config</a>
+          </li>
+        
+          <li>
+            <a href="/2018/07/20/tomcat-auto-start/">tomcat-auto-start</a>
+          </li>
+        
+          <li>
+            <a href="/2018/07/20/centos-time-sync/">centos-time-sync</a>
+          </li>
+        
+          <li>
+            <a href="/2018/07/20/springboot-config-jar/">springboot-config-jar</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 Beishan<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>
