@@ -151,7 +151,7 @@ var _hmt = _hmt || [];
 	
 	
 		<h3 id="1-移除版本控制"><a href="#1-移除版本控制" class="headerlink" title="1.移除版本控制"></a>1.移除版本控制</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">git rm -r -n --cached &quot;bin/&quot; //-n：加上这个参数，执行命令时，是不会删除任何文件，而是展示此命令要删除的文件列表预览。</span><br><span class="line"></span><br><span class="line">git rm -r --cached  &quot;bin/&quot;      //最终执行命令. </span><br><span class="line">git commit -m&quot; remove bin folder all file out of control&quot;    //提交</span><br><span class="line">git push origin master   //提交到远程服务器</span><br></pre></td></tr></table></figure>
-
+<h3 id="2-git-合并多个-commit"><a href="#2-git-合并多个-commit" class="headerlink" title="2. git 合并多个 commit"></a>2. git 合并多个 commit</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">1. 首先使用`git log` 命令查看想要历史提交记录</span><br><span class="line"></span><br><span class="line">## 假设是下方这样的</span><br><span class="line">c1  oijojo</span><br><span class="line">c2  foijer</span><br><span class="line">c3  fiojewr</span><br><span class="line"></span><br><span class="line">我们想把c1、c2 合并到 c3, 执行如下命令:</span><br><span class="line"></span><br><span class="line">`git rebase -i fiojewr`</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">然后会弹出类似下方这样的提示</span><br><span class="line"></span><br><span class="line">pick    werewrwerwr</span><br><span class="line">pick    werwerwerw</span><br><span class="line"></span><br><span class="line">我们把 pick 改成 s</span><br><span class="line"></span><br><span class="line">然后保存</span><br><span class="line"></span><br><span class="line">又会弹出我们需要编辑的commit 信息，编辑好后点击保存 就把commit 合并了, 然后再 使用 `git push --force` 命令，提交我们的改动，这里需要使用    `--force` 不然我们没有办法保存提交</span><br></pre></td></tr></table></figure>
 	
 	</div>
   <a type="button" href="/2018/09/05/git-study/#more" class="btn btn-default more">Read More</a>
@@ -413,19 +413,19 @@ var _hmt = _hmt || [];
 		<h4>Tag Cloud</h4>
 		<ul class="tag_box inline list-unstyled">		
 		
-			<li><a href="/tags/git/">git<span>2</span></a></li>
+			<li><a href="/tags/gitlab/">gitlab<span>1</span></a></li>
 		
-			<li><a href="/tags/tomcat/">tomcat<span>1</span></a></li>
+			<li><a href="/tags/git/">git<span>2</span></a></li>
 		
 			<li><a href="/tags/mysql/">mysql<span>1</span></a></li>
 		
-			<li><a href="/tags/hexo/">hexo<span>1</span></a></li>
-		
 			<li><a href="/tags/linux-centos-time/">linux, centos, time<span>1</span></a></li>
+		
+			<li><a href="/tags/hexo/">hexo<span>1</span></a></li>
 		
 			<li><a href="/tags/springboot/">springboot<span>1</span></a></li>
 		
-			<li><a href="/tags/gitlab/">gitlab<span>1</span></a></li>
+			<li><a href="/tags/tomcat/">tomcat<span>1</span></a></li>
 		
 		 
 		</ul>
